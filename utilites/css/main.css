@@ -63,15 +63,30 @@ header {
 
 nav ul {
     display: flex;
-    gap: 2rem;
+    gap: 2rem; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
     list-style: none;
 }
+#contato { 
+    padding: 0.5vh 1.5vh;
+    background-image: linear-gradient(to right, #db00ff, #ce00ff, #c000ff, #b100ff, #a100ff, #9400ff, #8700ff, #7800ff, #6900ff, #5900ff, #4300ff, #2200ff);
+    border-radius: 1vh; 
+    transition: 1.2ms; 
+    
 
+}  
 nav a {
     color: var(--light);
     text-decoration: none;
     transition: color 0.3s;
 }
+#contato:hover {
+    color: white;
+    background-image: linear-gradient(to left, #db00ff, #ce00ff, #c000ff, #b100ff, #a100ff, #9400ff, #8700ff, #7800ff, #6900ff, #5900ff, #4300ff, #2200ff); 
+}
+
 
 nav a:hover {
     color: var(--primary);
@@ -124,7 +139,7 @@ nav a:hover {
 }
 
 .about-video video {
-    width: 100%;
+    width: 100%; 
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
 }
@@ -143,7 +158,11 @@ nav a:hover {
     margin: 0 auto;
     align-items: center;
 } 
-
+.services-video video  {
+    height: 30vh; 
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.2); 
+    border-radius: 1vh;
+}
 
 .services-text h2 {
     font-size: 2.5rem;
@@ -224,7 +243,9 @@ nav a:hover {
     color: var(--secondary);
     margin-bottom: 1rem;
 }
-
+.testimonials-slider {
+    display: flex;
+}
 /* Rodapé */
 footer {
     padding: 4rem 5%;
@@ -287,7 +308,7 @@ footer {
         padding: 1rem;
         text-align: center;
     }
-
+    
     nav ul.active {
         display: flex;
     }
@@ -304,10 +325,17 @@ footer {
 
 @media (max-width: 480px) {
     .footer-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; 
+    
+    } 
+    .services-video video  {
+        height: 21vh;
     }
-
     .services-buttons {
+        flex-direction: column;
+    } 
+    .testimonials-slider {
+        display: flex; 
         flex-direction: column;
     }
 }
