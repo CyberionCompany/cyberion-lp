@@ -99,7 +99,7 @@ nav a:hover {
     overflow: hidden;
 }
 
-.hero iframe {
+.hero video {
     width: 100%;
     height: 100%;
     object-fit: cover;
