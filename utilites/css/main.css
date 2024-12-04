@@ -207,7 +207,12 @@ nav a:hover {
 .btn-secondary {
     background: transparent;
     border: 2px solid var(--primary);
-    color: var(--light);
+    color: var(--light); 
+} 
+.btn-secondary a {
+    text-decoration: none; 
+    color: white;
+
 }
 
 /* Seção de Depoimentos */
