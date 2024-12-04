@@ -1,0 +1,118 @@
+:root {
+    --color-1: #D90BCB;
+    --color-2: #C004D9;
+    --color-3: #9305F2;
+    --color-4: #3204D9;
+    --color-5: #0D0D0D;
+}
+* {
+    box-sizing: border-box;
+}
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: var(--color-5);
+    overflow-x: hidden; 
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+
+}
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+.container {
+    position: relative;
+    z-index: 1;
+    width: 90vw;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+.form-container {
+    background: rgb(46, 46, 46);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+.input-wrapper {
+    position: relative;
+    margin-bottom: 15px;
+}
+input {
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(13, 13, 13, 0.7);
+    border: 2px solid var(--color-1);
+    color: white;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 16px; /* Previne zoom no iOS */
+}
+input:focus {
+    outline: none;
+    border-color: var(--color-1);
+    box-shadow: 0 0 15px var(--color-1);
+}
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(217, 11, 203, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(217, 11, 203, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(217, 11, 203, 0); }
+}
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--color-1);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    animation: pulse 2s infinite;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+}
+button:hover {
+    background-color: var(--color-2);
+    animation-play-state: paused;
+}
+h2 {
+    color: var(--color-1);
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+@media screen and (max-width: 480px) {
+    .container {
+        width: 95%;
+        padding: 0 10px;
+    }
+    .form-container {
+        padding: 15px;
+    }
+    input, button {
+        font-size: 14px;
+        padding: 8px;
+    }
+    h2 {
+        font-size: 1.3rem;
+    }
+}

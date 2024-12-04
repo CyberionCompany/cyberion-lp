@@ -70,12 +70,15 @@ nav ul {
     list-style: none;
 }
 #contato { 
-    padding: 0.5vh 1.5vh;
+    padding: 1vh 3vh;
     background-image: linear-gradient(to right, #db00ff, #ce00ff, #c000ff, #b100ff, #a100ff, #9400ff, #8700ff, #7800ff, #6900ff, #5900ff, #4300ff, #2200ff);
     border-radius: 1vh; 
-    transition: 1.2ms; 
-    
-
+    color: white; 
+    font-size: 1.1em;
+     font-weight: bold; 
+     cursor: pointer; 
+     transition: 0.2s; 
+ 
 }  
 nav a {
     color: var(--light);
@@ -83,13 +86,17 @@ nav a {
     transition: color 0.3s;
 }
 #contato:hover {
-    color: white;
+    color: white; 
     background-image: linear-gradient(to left, #db00ff, #ce00ff, #c000ff, #b100ff, #a100ff, #9400ff, #8700ff, #7800ff, #6900ff, #5900ff, #4300ff, #2200ff); 
+
+   
 }
 
 
 nav a:hover {
-    color: var(--primary);
+    color: var(--primary); 
+    border-bottom: 2px solid #DB01D1; 
+    padding-bottom: 5px;
 }
 
 /* Seção do Herói */
@@ -309,7 +316,8 @@ footer {
         text-align: center;
     }
     
-    nav ul.active {
+    nav ul.active { 
+        transition: 2s;
         display: flex;
     }
 
