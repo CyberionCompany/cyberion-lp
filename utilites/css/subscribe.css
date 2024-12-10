@@ -1,118 +1,117 @@
 :root {
-    --color-1: #D90BCB;
-    --color-2: #C004D9;
-    --color-3: #9305F2;
-    --color-4: #3204D9;
-    --color-5: #0D0D0D;
+    --color-primary: #D90BCB;
+    --color-secondary: #C004D9;
+    --color-tertiary: #9305F2;
+    --color-quaternary: #3204D9;
+    --color-background: #0D0D0D;
 }
+
 * {
-    box-sizing: border-box;
-}
-body, html {
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: var(--color-5);
-    overflow-x: hidden; 
-    display: flex;
-    align-items: center;
-    justify-content: center; 
-
+    box-sizing: border-box;
 }
-#particles-js {
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: var(--color-background);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.cosmic-background {
     position: fixed;
     width: 100%;
     height: 100%;
     z-index: -1;
+    background: radial-gradient(ellipse at bottom, var(--color-background) 0%, black 100%);
 }
-.container {
+
+.star {
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+    animation: twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.2; }
+    100% { opacity: 1; }
+}
+
+.cosmic-container {
+    width: 90%;
+    max-width: 600px;
+    background: rgba(13, 13, 13, 0.8);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(209, 11, 203, 0.3);
     position: relative;
     z-index: 1;
-    width: 90vw;
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 0 15px;
 }
-.form-container {
-    background: rgb(46, 46, 46);
+
+.video-cosmic {
+    width: 100%;
     border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-}
-.video-container {
-    position: relative;
-    padding-bottom: 56.25%;
-    height: 0;
-    overflow: hidden;
+    box-shadow: 0 0 20px var(--color-primary);
     margin-bottom: 20px;
 }
-.video-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
+
+.form-group {
+    margin-bottom: 20px;
 }
-.input-wrapper {
-    position: relative;
-    margin-bottom: 15px;
-}
-input {
-    width: 100%;
-    padding: 10px;
-    background-color: rgba(13, 13, 13, 0.7);
-    border: 2px solid var(--color-1);
-    color: white;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    font-size: 16px; /* Previne zoom no iOS */
-}
-input:focus {
-    outline: none;
-    border-color: var(--color-1);
-    box-shadow: 0 0 15px var(--color-1);
-}
-@keyframes pulse {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(217, 11, 203, 0.7); }
-    70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(217, 11, 203, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(217, 11, 203, 0); }
-}
-button {
+
+.cosmic-input {
     width: 100%;
     padding: 12px;
-    background-color: var(--color-1);
+    background: transparent;
+    border: 2px solid var(--color-secondary);
+    border-radius: 10px;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.cosmic-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 15px var(--color-primary);
+}
+
+.cosmic-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(45deg, var(--color-primary), var(--color-quaternary));
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 15px;
     cursor: pointer;
-    animation: pulse 2s infinite;
-    transition: background-color 0.3s ease;
-    font-size: 16px;
+    transition: all 0.3s ease;
 }
-button:hover {
-    background-color: var(--color-2);
-    animation-play-state: paused;
+
+.cosmic-btn:hover {
+    animation: cosmic-pulse 0.7s infinite alternate;
 }
-h2 {
-    color: var(--color-1);
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.5rem;
+
+@keyframes cosmic-pulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
 }
-@media screen and (max-width: 480px) {
-    .container {
+
+@media (max-width: 480px) { 
+    .cosmic-background {
+        height: 400vh;  
+        display: flex;
+        align-items:center;
+         justify-content: center;
+
+    }
+    .cosmic-container {
         width: 95%;
-        padding: 0 10px;
-    }
-    .form-container {
-        padding: 15px;
-    }
-    input, button {
-        font-size: 14px;
-        padding: 8px;
-    }
-    h2 {
-        font-size: 1.3rem;
+        padding: 20px; 
+        background-color: red;
     }
 }
