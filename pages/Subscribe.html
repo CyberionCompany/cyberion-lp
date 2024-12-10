@@ -7,55 +7,27 @@
     
 </head>
 <body>
-    <div id="particles-js"></div>
-    <div class="container">
-        <div class="form-container">
-            <section>
-                <div class="video-container">
-                    <iframe 
-                        src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-                        title="Vídeo Informativo" 
-                        frameborder="0" 
-                        allowfullscreen
-                    ></iframe>
-                </div>
-            </section>
+    <div class="cosmic-background" id="starContainer"></div>
+    <div class="cosmic-container">
+        <video class="video-cosmic" controls>
+            <source src="/api/placeholder/600/400" type="video/mp4">
+            Seu navegador não suporta vídeo.
+        </video>
 
-            <section>
-                <h2>Formulário de Contato</h2>
-                <form id="contactForm">
-                    <div class="input-wrapper">
-                        <input 
-                            type="text" 
-                            id="nome" 
-                            name="nome" 
-                            placeholder="Nome" 
-                            required
-                        >
-                    </div>
-                    <div class="input-wrapper">
-                        <input 
-                            type="tel" 
-                            id="telefone" 
-                            name="telefone" 
-                            placeholder="Telefone" 
-                            required
-                        >
-                    </div>
-                    <div class="input-wrapper">
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email" 
-                            placeholder="E-mail" 
-                            required
-                        >
-                    </div>
-                    <button type="submit">Enviar</button>
-                </form>
-            </section>
-        </div>
+        <form id="cosmicForm">
+            <div class="form-group">
+                <input type="text" class="cosmic-input" placeholder="Nome Cósmico" required>
+            </div>
+            <div class="form-group">
+                <input type="tel" class="cosmic-input" placeholder="Transmissor Interestelar" required>
+            </div>
+            <div class="form-group">
+                <input type="email" class="cosmic-input" placeholder="Portal de Comunicação" required>
+            </div>
+            <button type="submit" class="cosmic-btn">Conectar Universo</button>
+        </form>
     </div>
+
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="../utilites/js/subscribe.js"></script>
 </body>

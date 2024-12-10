@@ -1,46 +1,39 @@
-particlesJS('particles-js', {
-    particles: {
-        number: { value: 80, density: { enable: true, value_area: 800 } },
-        color: { value: ['#D90BCB', '#C004D9', '#9305F2', '#3204D9'] },
-        shape: { type: 'circle' },
-        opacity: { value: 0.5, random: false },
-        size: { value: 3, random: true },
-        line_linked: { 
-            enable: true, 
-            distance: 150, 
-            color: '#ffffff', 
-            opacity: 0.4, 
-            width: 1 
-        },
-        move: {
-            enable: true,
-            speed: 3,
-            direction: 'none',
-            random: false,
-            straight: false,
-            out_mode: 'out',
-            bounce: false
-        }
-    },
-    interactivity: {
-        detect_on: 'canvas',
-        events: {
-            onhover: { enable: true, mode: 'repulse' },
-            onclick: { enable: true, mode: 'push' },
-            resize: true
-        }
-    },
-    retina_detect: true
+function createStars() {
+    const container = document.getElementById('starContainer');
+    const starCount = window.innerWidth < 480 ? 50 : 100;
+
+    for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        const size = Math.random() * 3;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        
+        star.style.animationDelay = `${Math.random() * 2}s`;
+        
+        container.appendChild(star);
+    }
+}
+
+createStars();
+window.addEventListener('resize', () => {
+    const container = document.getElementById('starContainer');
+    container.innerHTML = '';
+    createStars();
 });
 
-document.getElementById('contactForm').addEventListener('submit', function(e) {
+document.getElementById('cosmicForm').addEventListener('submit', function(e) {
     e.preventDefault();
+    const inputs = this.querySelectorAll('.cosmic-input');
+    const isValid = [...inputs].every(input => input.value.trim() !== '');
     
-    const nome = document.getElementById('nome').value;
-    const telefone = document.getElementById('telefone').value;
-    const email = document.getElementById('email').value;
-
-    alert(`Dados enviados:\nNome: ${nome}\nTelefone: ${telefone}\nE-mail: ${email}`);
-    
-    this.reset();
+    if (isValid) {
+        alert('Conexão Cósmica Estabelecida!');
+    } else {
+        alert('Preencha todos os portais de comunicação!');
+    }
 });
