@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Painel Cyberion</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* ================================================================== */
+        /* ============================ CSS ================================= */
+        /* ================================================================== */
+        :root {
+            --primary: #DA00FF;
+            --secondary: #2D00FF;
+            --dark-bg: #070212;
+            --content-bg: #100a23;
+            --border-color: #2a214d;
+            --light-text: #F0F2F5;
+            --grey-text: #a8a8b3;
+            --green: #28a745;
+            --blue: #007bff;
+            --red: #dc3545;
+            --orange: #fd7e14;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--content-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            transition: transform 0.3s ease-in-out;
+            z-index: 1010;
+        }
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .sidebar-logo img { width: 40px; }
+        .sidebar-logo span { font-size: 1.5rem; font-weight: 700; }
+        .close-sidebar-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--grey-text);
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            color: var(--grey-text);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .sidebar-nav li a svg { width: 24px; height: 24px; }
+        .sidebar-nav li a:hover {
+            background-color: var(--border-color);
+            color: var(--light-text);
+        }
+        .sidebar-nav li.active a {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 700;
+        }
+        .sidebar-footer { margin-top: auto; }
+        .logout-btn {
+            display: block; width: 100%; text-align: center; padding: 1rem;
+            background-color: rgba(220, 53, 69, 0.2);
+            color: var(--red);
+            border-radius: 8px; text-decoration: none; font-weight: 700;
+        }
+        .logout-btn:hover { background-color: var(--red); color: white; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .main-header h1 { font-size: 2rem; }
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--light-text);
+            cursor: pointer;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .search-box {
+            padding: 0.75rem 1rem;
+            background-color: var(--content-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--light-text);
+            min-width: 250px;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3);
+        }
+        
+        /* --- DASHBOARD GRID --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .summary-cards {
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        .card {
+            background-color: var(--content-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+        .card h3 {
+            color: var(--grey-text);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .card-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .card-content p {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        .card-content svg {
+            width: 28px;
+            height: 28px;
+            color: var(--grey-text);
+        }
+        
+        /* ================================================================== */
+        /* ================ CORREÇÃO DEFINITIVA DO GRÁFICO ================== */
+        /* ================================================================== */
+        .chart-container {
+            display: flex; /* 1. Usa flexbox para alinhar o título e o wrapper do gráfico */
+            flex-direction: column;
+            min-height: 350px; /* Garante uma altura mínima para o card */
+        }
+        .chart-wrapper {
+            position: relative; /* 2. Wrapper com posição relativa */
+            flex-grow: 1; /* 3. Permite que o wrapper cresça para preencher o espaço do card */
+            min-height: 0; /* Previne problemas de overflow do flexbox */
+        }
+        /* O Canvas do gráfico não precisa de estilos diretos aqui, pois a biblioteca o controla */
+
+        /* --- TABELA CRM --- */
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .filter-container { display: flex; align-items: center; gap: 0.5rem; }
+        #status-filter {
+            padding: 0.5rem;
+            background-color: var(--content-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--light-text);
+        }
+        .table-container {
+            background-color: var(--content-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow-x: auto;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+        th { color: var(--grey-text); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr { transition: background-color 0.2s; }
+        tbody tr:hover { background-color: var(--border-color); }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: white;
+            text-transform: capitalize;
+        }
+        .status-novo { background-color: var(--blue); }
+        .status-contatado { background-color: var(--orange); }
+        .status-convertido { background-color: var(--green); }
+        .status-perdido { background-color: var(--red); }
+        .action-btn {
+            padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;
+            font-weight: 700; color: white; border: none;
+        }
+        .btn-view { background-color: var(--secondary); }
+        
+        /* --- RESPONSIVIDADE --- */
+        @media (max-width: 992px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                height: 100%;
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-header {
+                justify-content: space-between;
+            }
+            .mobile-menu-toggle, .close-sidebar-btn {
+                display: block;
+            }
+            .header-actions .search-box {
+                display: none;
+            }
+        }
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .main-content {
+                padding: 1.5rem;
+            }
+            .main-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <img src="../../utilites/assets/CYBERION__1_-removebg-preview.png" alt="Cyberion Logo">
+                    <span>Cyberion</span>
+                </div>
+                <button class="close-sidebar-btn">&times;</button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 13.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v4.5a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-4.5ZM7.5 4.5a3 3 0 0 1 3-3h3a3 3 0 0 1 3 3v3h-9V4.5Z"/></svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 5.25h-1.008c-.917 0-1.699.663-1.85 1.567L6.018 8.25H5.25a1.875 1.875 0 0 0-1.875 1.875v1.5c0 .917.663 1.699 1.567 1.85l.258.05V15h.75a1.875 1.875 0 0 0 1.875-1.875v-1.5c0-.917-.663-1.699-1.567-1.85l-.258-.05V9.818l.172-.033c.917-.178 1.567-.98 1.567-1.85v-1.5A1.875 1.875 0 0 0 9.818 5.25h-.033l.172-1.433c.178-.917.98-1.567 1.85-1.567h1.844c.917 0 1.699.663 1.85 1.567l.172 1.433h-.033a1.875 1.875 0 0 0-1.875 1.875v1.5c0 .87-.65 1.672-1.567 1.85l.172.033v2.332l-.258.05c-.904.15-1.567.933-1.567 1.85v1.5A1.875 1.875 0 0 0 11.25 15h1.5l.172-1.433a1.875 1.875 0 0 0-1.567-1.85l-.258-.05V9.318a1.875 1.875 0 0 0 1.875-1.875v-1.5c0-.917-.663-1.699-1.567-1.85L14.95 5.25h-1.008a1.875 1.875 0 0 0-1.85-1.567h-1.014ZM16.5 15h.75a1.875 1.875 0 0 1 1.875 1.875v1.5c0 .917-.663-1.699-1.567 1.85l-.258.05v2.332h-.75a1.875 1.875 0 0 1-1.875-1.875v-1.5c0-.917.663-1.699 1.567-1.85l.258-.05v-2.332Z" clip-rule="evenodd" /></svg>
+                            Configurações
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="login.html" class="logout-btn">Sair</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <button class="mobile-menu-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M3 4h18v2H3V4Zm0 7h18v2H3v-2Zm0 7h18v2H3v-2Z"></path></svg>
+                </button>
+                <h1>Leads Recebidos</h1>
+                <div class="header-actions">
+                    <input type="search" id="search-input" class="search-box" placeholder="Buscar por nome...">
+                    <button class="btn btn-add">Adicionar Lead</button>
+                </div>
+            </header>
+            
+            <section class="dashboard-grid">
+                <div class="summary-cards">
+                    <div class="card">
+                        <h3>Novos Leads (7d)</h3>
+                        <div class="card-content">
+                            <p id="new-leads-count">0</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75A2.25 2.25 0 0 0 15.75 1.5h-2.25a.75.75 0 0 0 0 1.5h2.25a.75.75 0 0 1 .75.75v16.5a.75.75 0 0 1-.75.75h-7.5a.75.75 0 0 1-.75-.75V3.75a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 0 0-1.5ZM10.5 10.5a.75.75 0 0 0-1.5 0v3a.75.75 0 0 0 1.5 0v-3Z"/></svg>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Total de Contatos</h3>
+                        <div class="card-content">
+                            <p id="total-leads-count">0</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625a3.375 3.375 0 1 1 6.75 0 3.375 3.375 0 0 1-6.75 0ZM1.5 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63A13.067 13.067 0 0 1 8.625 22.5c-2.485 0-4.875-.672-6.938-1.846a.75.75 0 0 1-.364-.63l-.001-.12v-.002ZM16.5 19.128c0-1.442.923-2.733 2.25-3.328a.75.75 0 1 1 .5 1.332c-.968.364-1.5 1.157-1.5 2.003v.003l-.001.119a.75.75 0 0 1-.363.63A13.067 13.067 0 0 1 16.5 22.5c-.338 0-.672.016-1.003.046a.75.75 0 1 1-.1-1.492A11.532 11.532 0 0 0 16.5 21c1.378 0 2.68.217 3.84.608a.75.75 0 0 1-.364.63l-.001.12v.002c0 .926-.452 1.76-1.157 2.332a.75.75 0 1 1-1-1.114c.343-.308.557-.723.557-1.18v-.003Z"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container card">
+                     <h3>Leads por Status</h3>
+                     <div class="chart-wrapper">
+                        <canvas id="leadsChart"></canvas>
+                     </div>
+                </div>
+            </section>
+            
+            <section class="crm-table-section">
+                <div class="table-header">
+                    <h2>Controle de CRM</h2>
+                    <div class="filter-container">
+                        <label for="status-filter">Filtrar por status:</label>
+                        <select id="status-filter">
+                            <option value="todos">Todos</option>
+                            <option value="novo">Novo</option>
+                            <option value="contatado">Contatado</option>
+                            <option value="convertido">Convertido</option>
+                            <option value="perdido">Perdido</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Email</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="crm-tbody">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        /* ================================================================== */
+        /* ========================= JAVASCRIPT =========================== */
+        /* ================================================================== */
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- FONTE DE DADOS CENTRAL ---
+            const leadsData = [
+                { id: 1, name: 'João Silva', email: 'joao.silva@email.com', date: '01/07/2025', status: 'novo', message: 'Gostaria de um orçamento para um site institucional.' },
+                { id: 2, name: 'Maria Santos', email: 'maria.santos@email.com', date: '30/06/2025', status: 'contatado', message: 'O sistema desenvolvido pela Cyberion superou todas as nossas expectativas.' },
+                { id: 3, name: 'Pedro Oliveira', email: 'pedro.oliveira@email.com', date: '28/06/2025', status: 'convertido', message: 'Excelente plataforma SaaS! Recomendo.' },
+                { id: 4, name: 'Ana Costa', email: 'ana.costa@email.com', date: '25/06/2025', status: 'perdido', message: 'Encontramos outra solução, obrigado.' },
+                { id: 5, name: 'Lucas Martins', email: 'lucas.martins@email.com', date: '24/06/2025', status: 'novo', message: 'Preciso de uma automação RPA para meu financeiro.' },
+                { id: 6, name: 'Carla Dias', email: 'carla.dias@email.com', date: '22/06/2025', status: 'contatado', message: 'Ainda estamos analisando a proposta.' },
+            ];
+
+            // --- ELEMENTOS DO DOM ---
+            const crmTbody = document.getElementById('crm-tbody');
+            const searchInput = document.getElementById('search-input');
+            const statusFilter = document.getElementById('status-filter');
+            const chartCanvas = document.getElementById('leadsChart');
+            const newLeadsCountEl = document.getElementById('new-leads-count');
+            const totalLeadsCountEl = document.getElementById('total-leads-count');
+            const sidebar = document.querySelector('.sidebar');
+            const mobileMenuBtn = document.querySelector('.mobile-menu-toggle');
+            const closeSidebarBtn = document.querySelector('.close-sidebar-btn');
+
+            let leadsChart; 
+
+            function renderTable(data) {
+                if (!crmTbody) return;
+                crmTbody.innerHTML = ''; 
+                if (data.length === 0) {
+                    crmTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Nenhum resultado encontrado.</td></tr>';
+                    return;
+                }
+                data.forEach(lead => {
+                    const tr = document.createElement('tr');
+                    tr.dataset.name = lead.name;
+                    tr.dataset.status = lead.status;
+                    tr.innerHTML = `
+                        <td>${lead.name}</td>
+                        <td>${lead.email}</td>
+                        <td>${lead.date}</td>
+                        <td><span class="status-badge status-${lead.status}">${lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}</span></td>
+                        <td><button class="action-btn btn-view" data-id="${lead.id}">Ver</button></td>
+                    `;
+                    crmTbody.appendChild(tr);
+                });
+            }
+
+            function updateChart(data) {
+                if (!chartCanvas) return;
+                const statusCounts = { novo: 0, contatado: 0, convertido: 0, perdido: 0 };
+                data.forEach(lead => {
+                    if (statusCounts.hasOwnProperty(lead.status)) {
+                        statusCounts[lead.status]++;
+                    }
+                });
+                const chartData = {
+                    labels: ['Novo', 'Contatado', 'Convertido', 'Perdido'],
+                    datasets: [{
+                        label: 'Leads',
+                        data: [statusCounts.novo, statusCounts.contatado, statusCounts.convertido, statusCounts.perdido],
+                        backgroundColor: ['#007bff', '#fd7e14', '#28a745', '#dc3545'],
+                        borderColor: '#100a23',
+                        borderWidth: 3
+                    }]
+                };
+
+                if (leadsChart) {
+                    leadsChart.destroy();
+                }
+
+                leadsChart = new Chart(chartCanvas, {
+                    type: 'doughnut',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#a8a8b3',
+                                    font: { family: "'Inter', sans-serif" }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateSummaryCards(data) {
+                 if (!newLeadsCountEl || !totalLeadsCountEl) return;
+                 const newLeads = data.filter(lead => lead.status === 'novo').length;
+                 newLeadsCountEl.textContent = newLeads;
+                 totalLeadsCountEl.textContent = data.length;
+            }
+
+            function filterData() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const statusValue = statusFilter.value;
+
+                const filteredData = leadsData.filter(lead => {
+                    const nameMatch = lead.name.toLowerCase().includes(searchTerm);
+                    const statusMatch = (statusValue === 'todos') || (lead.status === statusValue);
+                    return nameMatch && statusMatch;
+                });
+
+                renderTable(filteredData);
+                updateChart(filteredData);
+                updateSummaryCards(leadsData); 
+            }
+            
+            if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', () => sidebar.classList.add('open'));
+            if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', () => sidebar.classList.remove('open'));
+            
+            if (searchInput) searchInput.addEventListener('input', filterData);
+            if (statusFilter) statusFilter.addEventListener('change', filterData);
+            
+            filterData();
+        });
+    </script>
+</body>
+</html>
