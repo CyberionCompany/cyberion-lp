@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadro de Atividades — Painel Cyberion</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #DA00FF; --secondary: #2D00FF; --dark-bg: #070212; --content-bg: #100a23;
+            --border-color: #2a214d; --light-text: #F0F2F5; --grey-text: #a8a8b3;
+            --green: #28a745; --blue: #007bff; --red: #dc3545; --orange: #fd7e14;
+            --priority-high: #dc3545; --priority-medium: #ffc107; --priority-low: #28a745;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--dark-bg); color: var(--light-text); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 260px; background-color: var(--content-bg); border-right: 1px solid var(--border-color);
+            display: flex; flex-direction: column; padding: 1.5rem; transition: transform 0.3s ease-in-out; z-index: 1010;
+        }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); }
+        .sidebar-logo { display: flex; align-items: center; gap: 0.8rem; }
+        .sidebar-logo img { width: 40px; }
+        .sidebar-logo span { font-size: 1.5rem; font-weight: 700; }
+        .close-sidebar-btn { display: none; background: none; border: none; color: var(--grey-text); font-size: 2rem; cursor: pointer; }
+        .sidebar-nav ul { list-style: none; padding: 0; }
+        .sidebar-nav li a { display: flex; align-items: center; gap: 1rem; padding: 1rem; color: var(--grey-text); text-decoration: none; border-radius: 8px; margin-bottom: 0.5rem; transition: background-color 0.2s, color 0.2s; }
+        .sidebar-nav li a svg { width: 24px; height: 24px; }
+        .sidebar-nav li a:hover { background-color: var(--border-color); color: var(--light-text); }
+        .sidebar-nav li.active a { background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; font-weight: 700; }
+        .sidebar-footer { margin-top: auto; }
+        .logout-btn { display: block; width: 100%; text-align: center; padding: 1rem; background-color: rgba(220, 53, 69, 0.2); color: var(--red); border-radius: 8px; text-decoration: none; font-weight: 700; }
+        .logout-btn:hover { background-color: var(--red); color: white; }
+        .main-content { flex-grow: 1; padding: 2rem; overflow-y: auto; }
+        .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        .main-header h1 { font-size: 2rem; }
+        .mobile-menu-toggle { display: none; background: none; border: none; color: var(--light-text); cursor: pointer; }
+        .header-actions { display: flex; align-items: center; gap: 1rem; }
+        .search-box { padding: 0.75rem 1rem; background-color: var(--content-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--light-text); min-width: 250px; }
+        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: transform 0.2s, box-shadow 0.2s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3); }
+        .kanban-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; align-items: flex-start; }
+        .kanban-column { display: flex; flex-direction: column; background-color: var(--content-bg); border-radius: 12px; padding: 1rem; border: 1px solid var(--border-color); }
+        .kanban-column.drag-over { border-color: var(--primary); }
+        .kanban-column-title { padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 2px solid var(--border-color); font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; justify-content: space-between; }
+        .kanban-column-title .count { background-color: var(--dark-bg); color: var(--grey-text); font-size: 0.8rem; padding: 0.2rem 0.6rem; border-radius: 6px; }
+        .kanban-cards { display: flex; flex-direction: column; gap: 1rem; flex-grow: 1; min-height: 150px; }
+        .kanban-card { background-color: var(--dark-bg); border: 1px solid var(--border-color); border-left: 4px solid transparent; border-radius: 8px; padding: 1rem; cursor: grab; transition: box-shadow 0.2s, border-color 0.2s; }
+        .kanban-card:hover { box-shadow: 0 0 15px rgba(var(--secondary-rgb), 0.2); border-color: var(--secondary); }
+        .kanban-card.dragging { opacity: 0.5; background: var(--border-color); }
+        .card-priority-high { border-left-color: var(--priority-high); } .card-priority-medium { border-left-color: var(--priority-medium); } .card-priority-low { border-left-color: var(--priority-low); }
+        .card-title { font-size: 1rem; font-weight: 500; margin-bottom: 0.75rem; }
+        .card-details { display: flex; justify-content: space-between; align-items: center; }
+        .card-lead-link { font-size: 0.8rem; color: var(--grey-text); background-color: var(--content-bg); padding: 0.2rem 0.6rem; border-radius: 6px; }
+        .card-assignee-avatar { width: 32px; height: 32px; border-radius: 50%; background-color: var(--secondary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; border: 2px solid var(--content-bg); }
+        .modal { display: none; position: fixed; z-index: 1020; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); align-items: center; justify-content: center; }
+        .modal.show { display: flex; }
+        .modal-content { background-color: var(--content-bg); padding: 2rem; border: 1px solid var(--border-color); width: 90%; max-width: 500px; border-radius: 12px; animation: modalFadeIn 0.3s ease; }
+        @keyframes modalFadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-header h2 { font-size: 1.5rem; }
+        .close-btn { background: none; border: none; font-size: 2rem; color: var(--grey-text); cursor: pointer; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--grey-text); font-weight: 500; }
+        .form-group input, .form-group select { width: 100%; padding: 0.8rem; background-color: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--light-text); font-size: 1rem; }
+        .modal-footer { margin-top: 1.5rem; text-align: right; }
+        @media (max-width: 1200px) { .kanban-board { display: flex; } }
+        @media (max-width: 992px) {
+            .sidebar { position: fixed; transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .mobile-menu-toggle, .close-sidebar-btn { display: block; }
+            .header-actions .search-box { display: none; }
+        }
+        @media (max-width: 768px) {
+            .main-content { padding: 1.5rem; }
+            .main-header { flex-direction: column; align-items: flex-start; }
+            .header-actions { width: 100%; margin-top: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <img src="https://i.imgur.com/x0xjz3z.png" alt="Cyberion Logo">
+                    <span>Cyberion</span>
+                </div>
+                <button class="close-sidebar-btn">&times;</button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="../AdmPage/AdmPage.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 13.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v4.5a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-4.5ZM7.5 4.5a3 3 0 0 1 3-3h3a3 3 0 0 1 3 3v3h-9V4.5Z"/></svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="#">
+                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V3.375c0-1.035-.84-1.875-1.875-1.875H5.625ZM12.75 6a.75.75 0 0 0-1.5 0v10.5a.75.75 0 0 0 1.5 0V6Z"/></svg>
+                            Quadro de Atividades
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 5.25h-1.008c-.917 0-1.699.663-1.85 1.567L6.018 8.25H5.25a1.875 1.875 0 0 0-1.875 1.875v1.5c0 .917.663 1.699 1.567 1.85l.258.05V15h.75a1.875 1.875 0 0 0 1.875-1.875v-1.5c0-.917-.663-1.699-1.567-1.85l-.258-.05V9.818l.172-.033c.917-.178 1.567-.98 1.567-1.85v-1.5A1.875 1.875 0 0 0 9.818 5.25h-.033l.172-1.433c.178-.917.98-1.567 1.85-1.567h1.844c.917 0 1.699.663 1.85 1.567l.172 1.433h-.033a1.875 1.875 0 0 0-1.875 1.875v1.5c0 .87-.65 1.672-1.567 1.85l.172.033v2.332l-.258.05c-.904.15-1.567.933-1.567 1.85v1.5A1.875 1.875 0 0 0 11.25 15h1.5l.172-1.433a1.875 1.875 0 0 0-1.567-1.85l-.258-.05V9.318a1.875 1.875 0 0 0 1.875-1.875v-1.5c0-.917-.663-1.699-1.567-1.85L14.95 5.25h-1.008a1.875 1.875 0 0 0-1.85-1.567h-1.014ZM16.5 15h.75a1.875 1.875 0 0 1 1.875 1.875v1.5c0 .917-.663-1.699-1.567 1.85l-.258.05v2.332h-.75a1.875 1.875 0 0 1-1.875-1.875v-1.5c0-.917.663-1.699 1.567-1.85l.258-.05v-2.332Z" clip-rule="evenodd" /></svg>
+                            Configurações
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="login.html" class="logout-btn">Sair</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <button class="mobile-menu-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M3 4h18v2H3V4Zm0 7h18v2H3v-2Zm0 7h18v2H3v-2Z"></path></svg>
+                </button>
+                <h1>Quadro de Atividades</h1>
+                <div class="header-actions">
+                    <input type="search" id="search-input" class="search-box" placeholder="Buscar atividades...">
+                    <button id="add-task-btn" class="btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6Z"></path></svg>
+                        Nova Atividade
+                    </button>
+                </div>
+            </header>
+            
+            <div class="kanban-board" id="kanban-board">
+                </div>
+        </main>
+    </div>
+
+    <div id="task-modal" class="modal">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2>Adicionar Nova Atividade</h2>
+                <button id="close-modal-btn" class="close-btn">&times;</button>
+            </header>
+            <form id="task-form">
+                <div class="form-group"><label for="task-title">Descrição</label><input type="text" id="task-title" required></div>
+                <div class="form-group"><label for="task-project">Projeto</label><select id="task-project" required></select></div>
+                <div class="form-group"><label for="task-assignee">Responsável</label><select id="task-assignee" required></select></div>
+                <div class="form-group"><label for="task-priority">Prioridade</label><select id="task-priority" required><option value="low">Baixa</option><option value="medium" selected>Média</option><option value="high">Alta</option></select></div>
+                <footer class="modal-footer"><button type="submit" class="btn">Salvar</button></footer>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const projectsData = [
+            { id: 1, name: 'Website Institucional (João Silva)' },
+            { id: 2, name: 'Sistema de Gestão (Maria Santos)' },
+            { id: 3, name: 'Plataforma SaaS (Pedro Oliveira)' },
+        ];
+        const collaboratorsData = [
+            { id: 'colab1', name: 'Ana', avatar: 'A' }, { id: 'colab2', name: 'Bruno', avatar: 'B' }, { id: 'colab3', name: 'Carla', avatar: 'C' }
+        ];
+        let tasksData = [
+            { id: 1, title: 'Desenhar wireframes da home page', status: 'backlog', projectId: 1, assignedToId: 'colab1', priority: 'high' },
+            { id: 2, title: 'Configurar ambiente de desenvolvimento', status: 'doing', projectId: 2, assignedToId: 'colab2', priority: 'high' },
+            { id: 3, title: 'Revisar textos da página "Sobre"', status: 'review', projectId: 1, assignedToId: 'colab3', priority: 'medium' },
+            { id: 4, title: 'Implementar funcionalidade de login', status: 'done', projectId: 2, assignedToId: 'colab2', priority: 'low' },
+        ];
+        const taskStatusConfig = { backlog: 'A Fazer', doing: 'Em Andamento', review: 'Para Revisão', done: 'Concluído' };
+        
+        const elements = {
+            kanbanBoard: document.getElementById('kanban-board'),
+            searchInput: document.getElementById('search-input'),
+            addTaskBtn: document.getElementById('add-task-btn'),
+            taskModal: document.getElementById('task-modal'),
+            closeModalBtn: document.getElementById('close-modal-btn'),
+            taskForm: document.getElementById('task-form'),
+            taskProjectSelect: document.getElementById('task-project'),
+            taskAssigneeSelect: document.getElementById('task-assignee'),
+            sidebar: document.querySelector('.sidebar'),
+            mobileMenuBtn: document.querySelector('.mobile-menu-toggle'),
+            closeSidebarBtn: document.querySelector('.close-sidebar-btn'),
+        };
+
+        const renderKanbanBoard = (filteredData = tasksData) => {
+            elements.kanbanBoard.innerHTML = '';
+            for (const statusId in taskStatusConfig) {
+                const columnEl = document.createElement('div');
+                columnEl.className = 'kanban-column';
+                columnEl.dataset.status = statusId;
+                const tasksInColumn = filteredData.filter(t => t.status === statusId);
+                columnEl.innerHTML = `<h3 class="kanban-column-title">${taskStatusConfig[statusId]}<span class="count">${tasksInColumn.length}</span></h3><div class="kanban-cards"></div>`;
+                const cardsContainer = columnEl.querySelector('.kanban-cards');
+                tasksInColumn.forEach(task => cardsContainer.appendChild(createCardElement(task)));
+                elements.kanbanBoard.appendChild(columnEl);
+            }
+            addDragAndDropListeners();
+        };
+
+        const createCardElement = (task) => {
+            const cardEl = document.createElement('div');
+            cardEl.className = `kanban-card card-priority-${task.priority}`;
+            cardEl.draggable = true;
+            cardEl.dataset.taskId = task.id;
+            const project = projectsData.find(l => l.id === task.projectId);
+            const assignee = collaboratorsData.find(c => c.id === task.assignedToId);
+            cardEl.innerHTML = `
+                <p class="card-title">${task.title}</p>
+                <div class="card-details">
+                    <span class="card-lead-link">${project ? project.name : 'N/A'}</span>
+                    <div class="card-assignee-avatar" title="Atribuído a ${assignee ? assignee.name : 'N/A'}">${assignee ? assignee.avatar : '?'}</div>
+                </div>`;
+            return cardEl;
+        };
+
+        const populateDropdowns = () => {
+            elements.taskProjectSelect.innerHTML = '';
+            projectsData.forEach(p => elements.taskProjectSelect.add(new Option(p.name, p.id)));
+            elements.taskAssigneeSelect.innerHTML = '';
+            collaboratorsData.forEach(c => elements.taskAssigneeSelect.add(new Option(c.name, c.id)));
+        };
+
+        const handleTaskFormSubmit = (e) => {
+            e.preventDefault();
+            const newTask = {
+                id: Date.now(),
+                title: document.getElementById('task-title').value,
+                status: 'backlog',
+                projectId: parseInt(document.getElementById('task-project').value),
+                assignedToId: document.getElementById('task-assignee').value,
+                priority: document.getElementById('task-priority').value,
+            };
+            tasksData.push(newTask);
+_renderKanbanBoard(tasksData);
+            elements.taskForm.reset();
+            elements.taskModal.classList.remove('show');
+        };
+
+        const addDragAndDropListeners = () => {
+            let draggedCardId = null;
+            document.querySelectorAll('.kanban-card').forEach(c => {
+                c.addEventListener('dragstart', e => { draggedCardId = e.target.dataset.taskId; setTimeout(() => e.target.classList.add('dragging'), 0); });
+                c.addEventListener('dragend', e => e.target.classList.remove('dragging'));
+            });
+            document.querySelectorAll('.kanban-column').forEach(col => {
+                col.addEventListener('dragover', e => { e.preventDefault(); col.classList.add('drag-over'); });
+                col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+                col.addEventListener('drop', e => {
+                    e.preventDefault();
+                    col.classList.remove('drag-over');
+                    const task = tasksData.find(t => t.id == draggedCardId);
+                    if (task && task.status !== col.dataset.status) {
+                        task.status = col.dataset.status;
+                        renderKanbanBoard(tasksData.filter(t => t.title.toLowerCase().includes(elements.searchInput.value.toLowerCase())));
+                    }
+                });
+            });
+        };
+        
+        elements.addTaskBtn.addEventListener('click', () => elements.taskModal.classList.add('show'));
+        elements.closeModalBtn.addEventListener('click', () => elements.taskModal.classList.remove('show'));
+        elements.taskForm.addEventListener('submit', handleTaskFormSubmit);
+        elements.searchInput.addEventListener('input', () => {
+            const searchTerm = elements.searchInput.value.toLowerCase();
+            const filteredTasks = tasksData.filter(t => t.title.toLowerCase().includes(searchTerm));
+            renderKanbanBoard(filteredTasks);
+        });
+        
+        if (elements.mobileMenuBtn) elements.mobileMenuBtn.addEventListener('click', () => elements.sidebar.classList.add('open'));
+        if (elements.closeSidebarBtn) elements.closeSidebarBtn.addEventListener('click', () => elements.sidebar.classList.remove('open'));
+
+        populateDropdowns();
+        renderKanbanBoard();
+    });
+    </script>
+</body>
+</html>
