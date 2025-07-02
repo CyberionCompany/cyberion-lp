@@ -7,7 +7,7 @@
     --dark: #070212;
     --light: #F0F2F5;
     --grey: #a8a8b3;
-    
+
     --primary-rgb: 218, 0, 255;
     --secondary-rgb: 45, 0, 255;
 
@@ -31,7 +31,6 @@ body {
     font-family: 'Inter', sans-serif;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    /* Animação de fade-in no carregamento da página */
     opacity: 0;
     animation: fadeInPage 1s var(--ease-out-quint) forwards;
 }
@@ -61,12 +60,10 @@ img, video {
     transform: translateY(40px);
     transition: opacity 1.2s var(--ease-out-quint), transform 1.2s var(--ease-out-quint);
 }
-/* A classe 'visible' será adicionada via JS quando o elemento aparecer na tela */
 .reveal.visible {
     opacity: 1;
     transform: translateY(0);
 }
-/* Adiciona um atraso para elementos filhos, criando um efeito cascata */
 .reveal > * {
     transition-delay: 0.2s;
 }
@@ -79,6 +76,7 @@ header {
     z-index: 1000;
     background: rgba(12, 4, 29, 0.7);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
 }
 
@@ -166,7 +164,7 @@ header {
     color: var(--light);
     font-size: 2rem;
     cursor: pointer;
-    z-index: 1001;
+    z-index: 1001; /* Garante que o botão do menu fique acima dos links */
     transition: transform 0.4s var(--ease-out-quint);
 }
 .mobile-menu-btn:hover {
@@ -176,15 +174,20 @@ header {
 /* --- SEÇÃO HERO --- */
 .hero {
     height: 100vh;
+    min-height: 100vh; /* **ADICIONADO**: Garante que a seção ocupe a altura total da tela */
     position: relative;
+    display: flex; /* Adicionado para centralizar o conteúdo */
+    align-items: center; /* Adicionado para centralizar o conteúdo */
+    justify-content: center; /* Adicionado para centralizar o conteúdo */
+    text-align: center;
     overflow: hidden;
 }
 .hero iframe {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 100%;
-    height: 100%;
+    width: 100vw; /* Garante que cubra toda a largura da viewport */
+    height: 100vh; /* Garante que cubra toda a altura da viewport */
     transform: translate(-50%, -50%);
     object-fit: cover;
     pointer-events: none;
@@ -196,13 +199,39 @@ header {
     width: 100%;
     height: 100%;
     background: rgba(7, 2, 18, 0.7);
-    z-index: 2;
+    z-index: 1;
 }
+
+/* NOVO: Conteúdo da Seção Hero */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 5%;
+    max-width: 800px;
+    text-align: center; /* **ADICIONADO**: Centraliza o texto por padrão */
+}
+.hero-content h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem); /* Tipografia fluida */
+    font-weight: 900;
+    line-height: 1.1;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 1rem;
+}
+.hero-content p {
+    font-size: clamp(1rem, 2.5vw, 1.25rem); /* Tipografia fluida */
+    color: var(--grey);
+    max-width: 60ch;
+    margin: 0 auto 2rem auto;
+}
+
 
 /* --- SEÇÕES DE CONTEÚDO --- */
 main section {
     padding: 6rem 5%;
-    overflow: hidden; /* Garante que os elementos animados não "vazem" */
+    overflow-x: hidden; /* Garante que os elementos animados não "vazem" lateralmente */
 }
 
 .about-container, .services-container {
@@ -215,18 +244,21 @@ main section {
 }
 
 section h2 {
-    font-size: clamp(2.2rem, 5vw, 3rem);
+    font-size: clamp(2.2rem, 5vw, 3rem); /* Tipografia fluida é ótima para responsividade */
     margin-bottom: 1.5rem;
     background: linear-gradient(90deg, var(--primary), var(--secondary));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     line-height: 1.2;
+    text-align: center; /* Garante que os títulos das seções também estejam centralizados no mobile */
 }
 
 section p {
     color: var(--grey);
     max-width: 60ch;
+    text-align: center; /* Garante que os parágrafos das seções também estejam centralizados no mobile */
+    margin: 0 auto 1rem auto; /* Mantém a margem centralizada */
 }
 
 .about-video video, .services-video video {
@@ -238,6 +270,8 @@ section p {
     display: flex;
     gap: 1rem;
     margin-top: 2rem;
+    flex-wrap: wrap; /* Permite que os botões quebrem a linha se não couberem */
+    justify-content: center; /* Garante que os botões estejam centralizados */
 }
 
 .btn {
@@ -247,6 +281,7 @@ section p {
     cursor: pointer;
     transition: transform 0.4s var(--ease-out-quint), box-shadow 0.4s var(--ease-out-quint), background-color 0.4s var(--ease-out-quint);
     border: 2px solid transparent;
+    text-align: center;
 }
 .btn:hover {
     transform: translateY(-3px);
@@ -271,12 +306,12 @@ section p {
     box-shadow: 0 6px 25px rgba(var(--primary-rgb), 0.4);
 }
 
-/* --- SEÇÃO DEPOIMENTOS COM CARROSSEL (CORRIGIDO) --- */
+/* --- SEÇÃO DEPOIMENTOS COM CARROSSEL --- */
 .testimonials {
     text-align: center;
     background: linear-gradient(to top, var(--dark) 0%, #100a23 100%);
-    position: relative; /* Necessário para posicionar os controles */
-    padding-bottom: 6rem; /* Espaço para os pontos de navegação */
+    position: relative;
+    padding-bottom: 6rem;
 }
 .testimonials h2 {
     margin-bottom: 3rem;
@@ -284,8 +319,8 @@ section p {
 
 .testimonial-card {
     padding: 2rem;
-    margin: 0 auto; /* Centraliza o card */
-    max-width: 650px; /* Define uma largura máxima para o depoimento */
+    margin: 0 auto;
+    max-width: 650px;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(15px);
     border-radius: 12px;
@@ -325,15 +360,16 @@ section p {
     color: var(--grey);
 }
 
-/* ESTILOS DO CARROSSEL (TINY SLIDER) (CORRIGIDO) */
+/* --- ESTILOS DO CARROSSEL (TINY SLIDER) --- */
 .tns-outer {
     position: relative;
 }
 .tns-nav {
     position: absolute;
-    bottom: -50px; /* Posiciona os pontos abaixo dos cards */
+    bottom: -50px;
     width: 100%;
     text-align: center;
+    z-index: 5;
 }
 .tns-nav button {
     width: 10px;
@@ -352,19 +388,18 @@ section p {
     transform: scale(1.2);
 }
 
-/* Controles (Setas) do Carrossel (CORRIGIDO) */
 .tns-controls {
     position: absolute;
     top: 50%;
     left: 50%;
     width: 100%;
-    max-width: 800px; /* Limita a distância entre as setas */
+    max-width: 800px;
     transform: translate(-50%, -50%);
     display: flex;
     justify-content: space-between;
     pointer-events: none;
+    z-index: 5;
 }
-
 .tns-controls button {
     pointer-events: all;
     background: rgba(var(--primary-rgb), 0.1);
@@ -376,7 +411,12 @@ section p {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.3s ease;
 }
+.tns-controls button:hover {
+    transform: scale(1.1);
+}
+
 /* --- RODAPÉ --- */
 footer {
     padding: 4rem 5%;
@@ -385,6 +425,7 @@ footer {
 }
 .footer-grid {
     display: grid;
+    /* auto-fit é excelente para responsividade automática */
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 3rem;
     max-width: 1200px;
@@ -392,8 +433,8 @@ footer {
 }
 .footer-column h3 { color: var(--light); margin-bottom: 1.5rem; }
 .footer-column ul { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
-.footer-column ul li { color: var(--grey); transition: color 0.3s ease; }
-.footer-column ul li:hover { color: var(--primary); }
+.footer-column ul li a { color: var(--grey); transition: color 0.3s ease; }
+.footer-column ul li a:hover { color: var(--primary); }
 .footer-bottom {
     text-align: center;
     margin-top: 4rem;
@@ -403,17 +444,33 @@ footer {
 }
 
 /* --- MEDIA QUERIES (RESPONSIVIDADE) --- */
+
+/* --- TABLETS E CELULARES GRANDES (ATÉ 900px) --- */
 @media (max-width: 900px) {
+    /* Reduz o espaçamento vertical em telas menores */
+    main section {
+        padding: 4rem 5%;
+    }
+
+    /* Empilha as colunas de grid para um layout vertical */
     .about-container, .services-container {
         grid-template-columns: 1fr;
         text-align: center;
     }
     .about-container .about-text { order: 2; }
     .about-container .about-video { order: 1; }
-    section p { margin: 0 auto 1rem auto; }
-    .services-buttons { justify-content: center; }
 
-    .mobile-menu-btn { display: block; }
+    section p {
+        margin: 0 auto 1rem auto;
+    }
+    .services-buttons {
+        justify-content: center;
+    }
+
+    /* Ativa o menu de navegação mobile */
+    .mobile-menu-btn {
+        display: block;
+    }
     .nav-links {
         position: fixed;
         top: 0;
@@ -424,19 +481,133 @@ footer {
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        gap: 2.5rem; /* Aumenta o espaçamento no menu mobile */
         font-size: 1.5rem;
         transform: translateX(100%);
-        transition: transform 0.4s var(--ease-out-quint);
+        transition: transform 0.5s var(--ease-out-quint);
     }
     .nav-links.active {
         transform: translateX(0);
     }
+    .nav-links a:hover::after {
+        width: 0; /* Remove o sublinhado no hover para o menu mobile */
+    }
 
-    /* Ajusta controles do carrossel no mobile */
+    /* Reduz o tamanho das setas do carrossel */
     .tns-controls {
-        padding: 0;
+        width: 95%; /* Aproxima as setas das bordas */
     }
     .tns-controls button {
-        transform: scale(0.8);
+        transform: scale(0.9);
     }
+}
+
+
+/* --- CELULARES (ATÉ 600px) --- */
+@media (max-width: 600px) {
+    /* Reduz ainda mais o espaçamento */
+    main section {
+        padding: 3rem 5%;
+    }
+
+    /* Ajusta o conteúdo do Hero para telas bem pequenas */
+    .hero-content {
+        padding: 0 8%;
+        text-align: center; /* **MODIFICADO**: Garante que o conteúdo do hero esteja centralizado */
+    }
+    .hero-content p, .hero-content h1 {
+        text-align: center; /* **ADICIONADO**: Centraliza explicitamente h1 e p dentro do hero */
+    }
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    /* Empilha os botões na vertical */
+    .services-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    /* Oculta as setas do carrossel em telas muito pequenas,
+       priorizando o swipe e os pontos de navegação */
+    .tns-controls {
+        display: none;
+    }
+
+    .testimonial-card {
+        padding: 1.5rem;
+    }
+
+    /* Centraliza o texto nas colunas do rodapé */
+    .footer-grid {
+        gap: 2rem;
+    }
+    .footer-column {
+        text-align: center;
+    }
+}
+
+/* CSS (Adicionar ao Final do seu <style>) */
+
+/* --- 6. SEÇÕES DE CONTEÚDO (Continuação) --- */
+
+/* Formulário de Contato */
+.contact-form {
+    max-width: 700px;
+    margin: 4rem auto 0 auto;
+    display: grid;
+    gap: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--grey);
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(var(--light), 0.05);
+    border: 1px solid rgba(var(--light), 0.1);
+    border-radius: 8px;
+    color: var(--light);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+    color: rgba(var(--grey), 0.6);
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+}
+
+.contact-form textarea {
+    resize: vertical; /* Permite redimensionamento vertical */
+    min-height: 120px;
+}
+
+/* Garante que o botão do formulário ocupe a largura total e tenha uma margem superior */
+.contact-form .btn {
+    width: 100%;
+    padding: 1.2rem 2.5rem;
+    margin-top: 1rem;
+    font-size: 1.1rem;
+}
+
+/* Renomeando a seção CTA antiga para ter o estilo correto */
+.cta {
+    background: var(--dark-medium);
+    text-align: center;
 }
