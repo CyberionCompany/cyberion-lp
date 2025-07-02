@@ -42,22 +42,41 @@
         .mobile-menu-toggle { display: none; background: none; border: none; color: var(--light-text); cursor: pointer; }
         .header-actions { display: flex; align-items: center; gap: 1rem; }
         .search-box { padding: 0.75rem 1rem; background-color: var(--content-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--light-text); min-width: 250px; }
-        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: transform 0.2s, box-shadow 0.2s; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3); }
+        .btn, .btn-secondary {
+            padding: 0.75rem 1.5rem; border: none; border-radius: 8px;
+            color: white; font-size: 0.9rem; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; gap: 0.5rem; text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+        }
+        .btn { background: linear-gradient(90deg, var(--primary), var(--secondary)); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.3); }
+        .btn-secondary { background-color: var(--content-bg); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background-color: var(--border-color); }
         .kanban-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; align-items: flex-start; }
         .kanban-column { display: flex; flex-direction: column; background-color: var(--content-bg); border-radius: 12px; padding: 1rem; border: 1px solid var(--border-color); }
         .kanban-column.drag-over { border-color: var(--primary); }
         .kanban-column-title { padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 2px solid var(--border-color); font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; justify-content: space-between; }
         .kanban-column-title .count { background-color: var(--dark-bg); color: var(--grey-text); font-size: 0.8rem; padding: 0.2rem 0.6rem; border-radius: 6px; }
         .kanban-cards { display: flex; flex-direction: column; gap: 1rem; flex-grow: 1; min-height: 150px; }
-        .kanban-card { background-color: var(--dark-bg); border: 1px solid var(--border-color); border-left: 4px solid transparent; border-radius: 8px; padding: 1rem; cursor: grab; transition: box-shadow 0.2s, border-color 0.2s; }
+        .kanban-card { background-color: var(--dark-bg); border: 1px solid var(--border-color); border-left: 4px solid transparent; border-radius: 8px; padding: 1rem; cursor: grab; transition: box-shadow 0.2s, border-color 0.2s; position: relative; }
         .kanban-card:hover { box-shadow: 0 0 15px rgba(var(--secondary-rgb), 0.2); border-color: var(--secondary); }
         .kanban-card.dragging { opacity: 0.5; background: var(--border-color); }
         .card-priority-high { border-left-color: var(--priority-high); } .card-priority-medium { border-left-color: var(--priority-medium); } .card-priority-low { border-left-color: var(--priority-low); }
-        .card-title { font-size: 1rem; font-weight: 500; margin-bottom: 0.75rem; }
+        .card-title { font-size: 1rem; font-weight: 500; margin-bottom: 0.75rem; padding-right: 2rem; }
         .card-details { display: flex; justify-content: space-between; align-items: center; }
         .card-lead-link { font-size: 0.8rem; color: var(--grey-text); background-color: var(--content-bg); padding: 0.2rem 0.6rem; border-radius: 6px; }
         .card-assignee-avatar { width: 32px; height: 32px; border-radius: 50%; background-color: var(--secondary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; border: 2px solid var(--content-bg); }
+        
+        /* NOVO: Estilos para o menu de ações do card */
+        .card-actions { position: absolute; top: 0.5rem; right: 0.5rem; }
+        .card-actions-btn { background: none; border: none; color: var(--grey-text); cursor: pointer; padding: 0.5rem; }
+        .card-actions-btn:hover { color: var(--light-text); }
+        .card-actions-menu { display: none; position: absolute; right: 0; top: 100%; background-color: var(--content-bg); border: 1px solid var(--border-color); border-radius: 8px; z-index: 10; list-style: none; padding: 0.5rem 0; width: 120px; }
+        .card-actions-menu.show { display: block; }
+        .card-actions-menu li button { background: none; border: none; color: var(--light-text); padding: 0.75rem 1rem; width: 100%; text-align: left; cursor: pointer; }
+        .card-actions-menu li button:hover { background-color: var(--border-color); }
+        .card-actions-menu .delete-btn { color: var(--red); }
+
         .modal { display: none; position: fixed; z-index: 1020; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); align-items: center; justify-content: center; }
         .modal.show { display: flex; }
         .modal-content { background-color: var(--content-bg); padding: 2rem; border: 1px solid var(--border-color); width: 90%; max-width: 500px; border-radius: 12px; animation: modalFadeIn 0.3s ease; }
@@ -70,99 +89,68 @@
         .form-group input, .form-group select { width: 100%; padding: 0.8rem; background-color: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--light-text); font-size: 1rem; }
         .modal-footer { margin-top: 1.5rem; text-align: right; }
         @media (max-width: 1200px) { .kanban-board { display: flex; } }
-        @media (max-width: 992px) {
-            .sidebar { position: fixed; transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); }
-            .mobile-menu-toggle, .close-sidebar-btn { display: block; }
-            .header-actions .search-box { display: none; }
-        }
-        @media (max-width: 768px) {
-            .main-content { padding: 1.5rem; }
-            .main-header { flex-direction: column; align-items: flex-start; }
-            .header-actions { width: 100%; margin-top: 1rem; }
-        }
+        @media (max-width: 992px) { .sidebar { position: fixed; transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .mobile-menu-toggle, .close-sidebar-btn { display: block; } .header-actions { flex-direction: column; align-items: flex-end; } }
+        @media (max-width: 768px) { .main-content { padding: 1.5rem; } .main-header { flex-direction: column; align-items: flex-start; } .header-actions { width: 100%; margin-top: 1rem; } }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="sidebar-logo">
-                    <img src="https://i.imgur.com/x0xjz3z.png" alt="Cyberion Logo">
-                    <span>Cyberion</span>
-                </div>
-                <button class="close-sidebar-btn">&times;</button>
-            </div>
+            <div class="sidebar-header"><div class="sidebar-logo"><img src="../../utilites/assets/CYBERION__1_-removebg-preview.png" alt="Cyberion Logo"><span>Cyberion</span></div><button class="close-sidebar-btn">&times;</button></div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li>
-                        <a href="../AdmPage/AdmPage.html">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 13.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v4.5a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-4.5ZM7.5 4.5a3 3 0 0 1 3-3h3a3 3 0 0 1 3 3v3h-9V4.5Z"/></svg>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li class="active">
-                        <a href="#">
-                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V3.375c0-1.035-.84-1.875-1.875-1.875H5.625ZM12.75 6a.75.75 0 0 0-1.5 0v10.5a.75.75 0 0 0 1.5 0V6Z"/></svg>
-                            Quadro de Atividades
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 5.25h-1.008c-.917 0-1.699.663-1.85 1.567L6.018 8.25H5.25a1.875 1.875 0 0 0-1.875 1.875v1.5c0 .917.663 1.699 1.567 1.85l.258.05V15h.75a1.875 1.875 0 0 0 1.875-1.875v-1.5c0-.917-.663-1.699-1.567-1.85l-.258-.05V9.818l.172-.033c.917-.178 1.567-.98 1.567-1.85v-1.5A1.875 1.875 0 0 0 9.818 5.25h-.033l.172-1.433c.178-.917.98-1.567 1.85-1.567h1.844c.917 0 1.699.663 1.85 1.567l.172 1.433h-.033a1.875 1.875 0 0 0-1.875 1.875v1.5c0 .87-.65 1.672-1.567 1.85l.172.033v2.332l-.258.05c-.904.15-1.567.933-1.567 1.85v1.5A1.875 1.875 0 0 0 11.25 15h1.5l.172-1.433a1.875 1.875 0 0 0-1.567-1.85l-.258-.05V9.318a1.875 1.875 0 0 0 1.875-1.875v-1.5c0-.917-.663-1.699-1.567-1.85L14.95 5.25h-1.008a1.875 1.875 0 0 0-1.85-1.567h-1.014ZM16.5 15h.75a1.875 1.875 0 0 1 1.875 1.875v1.5c0 .917-.663-1.699-1.567 1.85l-.258.05v2.332h-.75a1.875 1.875 0 0 1-1.875-1.875v-1.5c0-.917.663-1.699 1.567-1.85l.258-.05v-2.332Z" clip-rule="evenodd" /></svg>
-                            Configurações
-                        </a>
-                    </li>
+                    <li><a href="../AdmPage/AdmPage.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 13.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v4.5a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-4.5ZM7.5 4.5a3 3 0 0 1 3-3h3a3 3 0 0 1 3 3v3h-9V4.5Z"/></svg>Dashboard</a></li>
+                    <li class="active"><a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V3.375c0-1.035-.84-1.875-1.875-1.875H5.625ZM12.75 6a.75.75 0 0 0-1.5 0v10.5a.75.75 0 0 0 1.5 0V6Z"/></svg>Quadro de Atividades</a></li>
+                    <li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 5.25h-1.008c-.917 0-1.699.663-1.85 1.567L6.018 8.25H5.25a1.875 1.875 0 0 0-1.875 1.875v1.5c0 .917.663 1.699 1.567 1.85l.258.05V15h.75a1.875 1.875 0 0 0 1.875-1.875v-1.5c0-.917-.663-1.699-1.567-1.85l-.258-.05V9.818l.172-.033c.917-.178 1.567-.98 1.567-1.85v-1.5A1.875 1.875 0 0 0 9.818 5.25h-.033l.172-1.433c.178-.917.98-1.567 1.85-1.567h1.844c.917 0 1.699.663 1.85 1.567l.172 1.433h-.033a1.875 1.875 0 0 0-1.875 1.875v1.5c0 .87-.65 1.672-1.567 1.85l.172.033v2.332l-.258.05c-.904.15-1.567.933-1.567 1.85v1.5A1.875 1.875 0 0 0 11.25 15h1.5l.172-1.433a1.875 1.875 0 0 0-1.567-1.85l-.258-.05V9.318a1.875 1.875 0 0 0 1.875-1.875v-1.5c0-.917-.663-1.699-1.567-1.85L14.95 5.25h-1.008a1.875 1.875 0 0 0-1.85-1.567h-1.014ZM16.5 15h.75a1.875 1.875 0 0 1 1.875 1.875v1.5c0 .917-.663-1.699-1.567 1.85l-.258.05v2.332h-.75a1.875 1.875 0 0 1-1.875-1.875v-1.5c0-.917.663-1.699 1.567-1.85l.258-.05v-2.332Z" clip-rule="evenodd" /></svg>Configurações</a></li>
                 </ul>
             </nav>
-            <div class="sidebar-footer">
-                <a href="login.html" class="logout-btn">Sair</a>
-            </div>
+            <div class="sidebar-footer"><a href="login.html" class="logout-btn">Sair</a></div>
         </aside>
 
         <main class="main-content">
             <header class="main-header">
-                <button class="mobile-menu-toggle">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M3 4h18v2H3V4Zm0 7h18v2H3v-2Zm0 7h18v2H3v-2Z"></path></svg>
-                </button>
+                <button class="mobile-menu-toggle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M3 4h18v2H3V4Zm0 7h18v2H3v-2Zm0 7h18v2H3v-2Z"></path></svg></button>
                 <h1>Quadro de Atividades</h1>
                 <div class="header-actions">
                     <input type="search" id="search-input" class="search-box" placeholder="Buscar atividades...">
-                    <button id="add-task-btn" class="btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6Z"></path></svg>
-                        Nova Atividade
-                    </button>
+                    <button id="add-project-btn" class="btn btn-secondary">Novo Projeto</button>
+                    <button id="add-task-btn" class="btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2h6Z"></path></svg>Nova Atividade</button>
                 </div>
             </header>
             
-            <div class="kanban-board" id="kanban-board">
-                </div>
+            <div class="kanban-board" id="kanban-board"></div>
         </main>
     </div>
 
     <div id="task-modal" class="modal">
         <div class="modal-content">
-            <header class="modal-header">
-                <h2>Adicionar Nova Atividade</h2>
-                <button id="close-modal-btn" class="close-btn">&times;</button>
-            </header>
+            <header class="modal-header"><h2 id="modal-title">Adicionar Nova Atividade</h2><button class="close-btn">&times;</button></header>
             <form id="task-form">
+                <input type="hidden" id="task-id">
                 <div class="form-group"><label for="task-title">Descrição</label><input type="text" id="task-title" required></div>
                 <div class="form-group"><label for="task-project">Projeto</label><select id="task-project" required></select></div>
                 <div class="form-group"><label for="task-assignee">Responsável</label><select id="task-assignee" required></select></div>
-                <div class="form-group"><label for="task-priority">Prioridade</label><select id="task-priority" required><option value="low">Baixa</option><option value="medium" selected>Média</option><option value="high">Alta</option></select></div>
+                <div class="form-group"><label for="task-priority">Prioridade</label><select id="task-priority" required><option value="low">Baixa</option><option value="medium">Média</option><option value="high">Alta</option></select></div>
                 <footer class="modal-footer"><button type="submit" class="btn">Salvar</button></footer>
+            </form>
+        </div>
+    </div>
+
+    <div id="project-modal" class="modal">
+        <div class="modal-content">
+            <header class="modal-header"><h2>Adicionar Novo Projeto/Lead</h2><button class="close-btn">&times;</button></header>
+            <form id="project-form">
+                <div class="form-group"><label for="project-name">Nome do Projeto</label><input type="text" id="project-name" required></div>
+                <div class="form-group"><label for="client-name">Nome do Cliente</label><input type="text" id="client-name" required></div>
+                <footer class="modal-footer"><button type="submit" class="btn">Salvar Projeto</button></footer>
             </form>
         </div>
     </div>
     
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-
-        const projectsData = [
-            { id: 1, name: 'Website Institucional (João Silva)' },
-            { id: 2, name: 'Sistema de Gestão (Maria Santos)' },
-            { id: 3, name: 'Plataforma SaaS (Pedro Oliveira)' },
+        let projectsData = [
+            { id: 1, name: 'Website Institucional (João Silva)' }, { id: 2, name: 'Sistema de Gestão (Maria Santos)' }, { id: 3, name: 'Plataforma SaaS (Pedro Oliveira)' },
         ];
         const collaboratorsData = [
             { id: 'colab1', name: 'Ana', avatar: 'A' }, { id: 'colab2', name: 'Bruno', avatar: 'B' }, { id: 'colab3', name: 'Carla', avatar: 'C' }
@@ -176,17 +164,12 @@
         const taskStatusConfig = { backlog: 'A Fazer', doing: 'Em Andamento', review: 'Para Revisão', done: 'Concluído' };
         
         const elements = {
-            kanbanBoard: document.getElementById('kanban-board'),
-            searchInput: document.getElementById('search-input'),
-            addTaskBtn: document.getElementById('add-task-btn'),
-            taskModal: document.getElementById('task-modal'),
-            closeModalBtn: document.getElementById('close-modal-btn'),
-            taskForm: document.getElementById('task-form'),
-            taskProjectSelect: document.getElementById('task-project'),
-            taskAssigneeSelect: document.getElementById('task-assignee'),
-            sidebar: document.querySelector('.sidebar'),
-            mobileMenuBtn: document.querySelector('.mobile-menu-toggle'),
-            closeSidebarBtn: document.querySelector('.close-sidebar-btn'),
+            kanbanBoard: document.getElementById('kanban-board'), searchInput: document.getElementById('search-input'),
+            addTaskBtn: document.getElementById('add-task-btn'), addProjectBtn: document.getElementById('add-project-btn'),
+            taskModal: document.getElementById('task-modal'), projectModal: document.getElementById('project-modal'),
+            taskForm: document.getElementById('task-form'), projectForm: document.getElementById('project-form'),
+            taskProjectSelect: document.getElementById('task-project'), taskAssigneeSelect: document.getElementById('task-assignee'),
+            modalTitle: document.getElementById('modal-title'), taskIdInput: document.getElementById('task-id'),
         };
 
         const renderKanbanBoard = (filteredData = tasksData) => {
@@ -201,7 +184,7 @@
                 tasksInColumn.forEach(task => cardsContainer.appendChild(createCardElement(task)));
                 elements.kanbanBoard.appendChild(columnEl);
             }
-            addDragAndDropListeners();
+            addCardEventListeners();
         };
 
         const createCardElement = (task) => {
@@ -212,6 +195,15 @@
             const project = projectsData.find(l => l.id === task.projectId);
             const assignee = collaboratorsData.find(c => c.id === task.assignedToId);
             cardEl.innerHTML = `
+                <div class="card-actions">
+                    <button class="card-actions-btn" data-task-id="${task.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C10.9 3 10 3.9 10 5C10 6.1 10.9 7 12 7C13.1 7 14 6.1 14 5C14 3.9 13.1 3 12 3ZM12 17C10.9 17 10 17.9 10 19C10 20.1 10.9 21 12 21C13.1 21 14 20.1 14 19C14 17.9 13.1 17 12 17ZM12 10C10.9 10 10 10.9 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10Z"></path></svg>
+                    </button>
+                    <ul class="card-actions-menu">
+                        <li><button class="edit-btn" data-task-id="${task.id}">Editar</button></li>
+                        <li><button class="delete-btn" data-task-id="${task.id}">Apagar</button></li>
+                    </ul>
+                </div>
                 <p class="card-title">${task.title}</p>
                 <div class="card-details">
                     <span class="card-lead-link">${project ? project.name : 'N/A'}</span>
@@ -219,64 +211,138 @@
                 </div>`;
             return cardEl;
         };
-
-        const populateDropdowns = () => {
+        
+        const populateTaskProjectDropdown = () => {
             elements.taskProjectSelect.innerHTML = '';
             projectsData.forEach(p => elements.taskProjectSelect.add(new Option(p.name, p.id)));
+        };
+
+        const populateAssigneeDropdown = () => {
             elements.taskAssigneeSelect.innerHTML = '';
             collaboratorsData.forEach(c => elements.taskAssigneeSelect.add(new Option(c.name, c.id)));
         };
 
         const handleTaskFormSubmit = (e) => {
             e.preventDefault();
-            const newTask = {
-                id: Date.now(),
+            const taskId = elements.taskIdInput.value;
+            const taskData = {
                 title: document.getElementById('task-title').value,
-                status: 'backlog',
-                projectId: parseInt(document.getElementById('task-project').value),
+                projectId: parseInt(elements.taskProjectSelect.value),
                 assignedToId: document.getElementById('task-assignee').value,
                 priority: document.getElementById('task-priority').value,
             };
-            tasksData.push(newTask);
-_renderKanbanBoard(tasksData);
-            elements.taskForm.reset();
-            elements.taskModal.classList.remove('show');
+
+            if (taskId) { // Modo Edição
+                const taskIndex = tasksData.findIndex(t => t.id == taskId);
+                if (taskIndex > -1) {
+                    tasksData[taskIndex] = { ...tasksData[taskIndex], ...taskData };
+                }
+            } else { // Modo Criação
+                tasksData.push({ ...taskData, id: Date.now(), status: 'backlog' });
+            }
+            renderKanbanBoard();
+            closeModal(elements.taskModal);
+        };
+        
+        const handleProjectFormSubmit = (e) => {
+            e.preventDefault();
+            const newProject = {
+                id: Date.now(),
+                name: `${document.getElementById('project-name').value} (${document.getElementById('client-name').value})`,
+            };
+            projectsData.push(newProject);
+            populateTaskProjectDropdown(); 
+            elements.projectForm.reset();
+            closeModal(elements.projectModal);
+        };
+        
+        const openModal = (modal) => modal.classList.add('show');
+        const closeModal = (modal) => modal.classList.remove('show');
+        
+        // ATUALIZADO: Lógica para abrir modal em modo de edição
+        const openEditTaskModal = (taskId) => {
+            const task = tasksData.find(t => t.id == taskId);
+            if (!task) return;
+
+            elements.modalTitle.textContent = 'Editar Atividade';
+            elements.taskIdInput.value = task.id;
+            document.getElementById('task-title').value = task.title;
+            elements.taskProjectSelect.value = task.projectId;
+            elements.taskAssigneeSelect.value = task.assignedToId;
+            document.getElementById('task-priority').value = task.priority;
+            
+            openModal(elements.taskModal);
         };
 
-        const addDragAndDropListeners = () => {
+        const openNewTaskModal = () => {
+            elements.modalTitle.textContent = 'Adicionar Nova Atividade';
+            elements.taskForm.reset();
+            elements.taskIdInput.value = '';
+            openModal(elements.taskModal);
+        };
+
+        const deleteTask = (taskId) => {
+            if (confirm('Tem certeza que deseja apagar esta atividade?')) {
+                tasksData = tasksData.filter(t => t.id != taskId);
+                renderKanbanBoard();
+            }
+        };
+
+        function addCardEventListeners() {
+            // Drag and Drop
             let draggedCardId = null;
             document.querySelectorAll('.kanban-card').forEach(c => {
-                c.addEventListener('dragstart', e => { draggedCardId = e.target.dataset.taskId; setTimeout(() => e.target.classList.add('dragging'), 0); });
-                c.addEventListener('dragend', e => e.target.classList.remove('dragging'));
+                c.addEventListener('dragstart', e => { draggedCardId = e.target.closest('.kanban-card').dataset.taskId; setTimeout(() => e.target.closest('.kanban-card').classList.add('dragging'), 0); });
+                c.addEventListener('dragend', e => e.target.closest('.kanban-card').classList.remove('dragging'));
             });
             document.querySelectorAll('.kanban-column').forEach(col => {
                 col.addEventListener('dragover', e => { e.preventDefault(); col.classList.add('drag-over'); });
                 col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
                 col.addEventListener('drop', e => {
-                    e.preventDefault();
-                    col.classList.remove('drag-over');
+                    e.preventDefault(); col.classList.remove('drag-over');
                     const task = tasksData.find(t => t.id == draggedCardId);
-                    if (task && task.status !== col.dataset.status) {
-                        task.status = col.dataset.status;
-                        renderKanbanBoard(tasksData.filter(t => t.title.toLowerCase().includes(elements.searchInput.value.toLowerCase())));
-                    }
+                    if (task && task.status !== col.dataset.status) { task.status = col.dataset.status; renderKanbanBoard(); }
                 });
             });
-        };
+
+            // Ações do Card (Editar/Apagar)
+            document.querySelectorAll('.card-actions-btn').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    e.stopPropagation();
+                    const menu = btn.nextElementSibling;
+                    // Fecha outros menus abertos
+                    document.querySelectorAll('.card-actions-menu').forEach(m => { if (m !== menu) m.classList.remove('show'); });
+                    menu.classList.toggle('show');
+                });
+            });
+            document.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', e => openEditTaskModal(e.target.dataset.taskId)));
+            document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', e => deleteTask(e.target.dataset.taskId)));
+        }
+
+        elements.addTaskBtn.addEventListener('click', openNewTaskModal);
+        elements.addProjectBtn.addEventListener('click', () => openModal(elements.projectModal));
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.querySelector('.close-btn').addEventListener('click', () => closeModal(modal));
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(modal); });
+        });
         
-        elements.addTaskBtn.addEventListener('click', () => elements.taskModal.classList.add('show'));
-        elements.closeModalBtn.addEventListener('click', () => elements.taskModal.classList.remove('show'));
         elements.taskForm.addEventListener('submit', handleTaskFormSubmit);
+        elements.projectForm.addEventListener('submit', handleProjectFormSubmit);
         elements.searchInput.addEventListener('input', () => {
             const searchTerm = elements.searchInput.value.toLowerCase();
             const filteredTasks = tasksData.filter(t => t.title.toLowerCase().includes(searchTerm));
             renderKanbanBoard(filteredTasks);
         });
         
-        if (elements.mobileMenuBtn) elements.mobileMenuBtn.addEventListener('click', () => elements.sidebar.classList.add('open'));
-        if (elements.closeSidebarBtn) elements.closeSidebarBtn.addEventListener('click', () => elements.sidebar.classList.remove('open'));
+        document.body.addEventListener('click', e => {
+            if (!e.target.closest('.card-actions')) {
+                document.querySelectorAll('.card-actions-menu').forEach(m => m.classList.remove('show'));
+            }
+        });
 
-        populateDropdowns();
+        // --- INICIALIZAÇÃO ---
+        populateTaskProjectDropdown();
+        populateAssigneeDropdown();
         renderKanbanBoard();
     });
     </script>
