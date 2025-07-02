@@ -2,148 +2,605 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device -width, initial-scale=1.0">
-    <title>Cyberion - Soluções Digitais</title> 
-    <link rel="shortcut icon" href="./utilites//assets/favicon.png" type="image/x-icon">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/min/tiny-slider.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">  
-    <link rel="stylesheet" href="https://cdn.positus.global/production/resources/robbu/whatsapp-button/whatsapp-button.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberion — Reinventando o Futuro Digital</title>
+    
+    <link rel="shortcut icon" href="https://i.imgur.com/x0xjz3z.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
 
-     <link rel="stylesheet" href="utilites/css/main.css"> 
-    
-   <style>
-    
-     
+    <style>
+        /* --- 1. RESET E VARIÁVEIS GLOBAIS --- */
+        :root {
+            --primary: #DA00FF;
+            --secondary: #2D00FF;
+            --dark: #070212;
+            --dark-medium: #100a23;
+            --light: #F0F2F5;
+            --grey: #a8a8b3;
+            
+            --primary-rgb: 218, 0, 255;
+            --secondary-rgb: 45, 0, 255;
+
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; /* Previne scroll horizontal */
+        }
+
+        body.menu-open {
+            overflow: hidden;
+        }
+
+        img, video {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* --- 2. FUNDO ANIMADO E ELEMENTOS GERAIS --- */
+        .background-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: 
+                radial-gradient(ellipse 50% 50% at 50% 50%, rgba(var(--primary-rgb), 0.1), transparent 70%),
+                radial-gradient(ellipse 40% 60% at 20% 70%, rgba(var(--secondary-rgb), 0.1), transparent 70%),
+                radial-gradient(ellipse 40% 60% at 80% 30%, rgba(var(--primary-rgb), 0.1), transparent 70%);
+            z-index: -1;
+            animation: backgroundPan 25s linear infinite;
+        }
+
+        @keyframes backgroundPan {
+            0% { background-position: 0% 50%, 0% 50%, 0% 50%; }
+            50% { background-position: 100% 50%, 100% 50%, 100% 50%; }
+            100% { background-position: 0% 50%, 0% 50%, 0% 50%; }
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+        }
+        .btn--primary {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        .btn--primary:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(var(--primary-rgb), 0.3);
+        }
+
+        /* --- 3. ANIMAÇÕES DE SCROLL --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s var(--ease-out), transform 1s var(--ease-out);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- 4. CABEÇALHO --- */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 0;
+            z-index: 1000;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .header.scrolled {
+            background-color: rgba(12, 4, 29, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
+        }
+        .header__nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header__logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--light);
+        }
+        .header__logo img { width: 40px; }
+        .header__links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+        .header__links a {
+            color: var(--grey);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .header__links a:hover {
+            color: var(--light);
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none; border: none;
+            color: var(--light); font-size: 2rem;
+            cursor: pointer; z-index: 1001;
+        }
+
+        /* --- 5. SEÇÃO HERO --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            padding-top: 8rem;
+        }
+        .hero__content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .hero__title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            background: linear-gradient(90deg, #fff, #c1c1c1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.5rem;
+        }
+        .hero__title span {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero__subtitle {
+            font-size: 1.25rem;
+            color: var(--grey);
+            max-width: 600px;
+            margin: 0 auto 2.5rem auto;
+        }
+
+        /* --- 6. SEÇÕES DE CONTEÚDO --- */
+        .section {
+            padding: 6rem 0;
+            border-bottom: 1px solid rgba(var(--light), 0.05);
+        }
+        .section__title {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            margin-bottom: 1rem;
+            font-weight: 900;
+        }
+        .section__subtitle {
+            text-align: center;
+            color: var(--grey);
+            max-width: 600px;
+            margin: 0 auto 4rem auto;
+        }
+
+        /* Serviços */
+        .services__grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .service-card {
+            background: linear-gradient(145deg, rgba(var(--light), 0.05), rgba(var(--light), 0.02));
+            border: 1px solid rgba(var(--light), 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+        }
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(var(--primary-rgb), 0.5);
+        }
+        .service-card__icon {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        .service-card__title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--light);
+        }
+        .service-card__description {
+            color: var(--grey);
+        }
+
+        /* Sobre */
+        .about__content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 4rem;
+        }
+        .about__text p {
+            margin-bottom: 1rem;
+            color: var(--grey);
+        }
+        .about__video {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        /* Depoimentos */
+        .testimonials {
+            position: relative;
+        }
+        .testimonial-card {
+            padding: 2rem;
+            text-align: center;
+        }
+        .testimonial-card__image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            border: 3px solid var(--primary);
+        }
+        .testimonial-card__text {
+            font-style: italic;
+            color: var(--grey);
+            margin-bottom: 1.5rem;
+        }
+        .testimonial-card__name {
+            font-weight: 700;
+            color: var(--light);
+        }
+        .testimonial-card__company {
+            color: var(--primary);
+        }
+
+        /* Estilos do Carrossel */
+        .tns-outer { padding: 0 !important; }
+        .tns-nav { margin-top: 2rem; text-align: center; }
+        .tns-nav button {
+            width: 10px; height: 10px; background-color: rgba(var(--light), 0.3);
+            border: none; border-radius: 50%; margin: 0 6px;
+            transition: all 0.3s;
+        }
+        .tns-nav button.tns-nav-active {
+            background-color: var(--primary); transform: scale(1.2);
+        }
+        .tns-controls {
+            position: absolute; top: 50%; width: 100%;
+            transform: translateY(-50%); display: flex;
+            justify-content: space-between; z-index: 10;
+        }
+        .tns-controls button {
+            background: rgba(var(--dark), 0.5); border: 1px solid rgba(var(--light), 0.1);
+            backdrop-filter: blur(5px); color: var(--light);
+            width: 45px; height: 45px; border-radius: 50%; font-size: 1.5rem;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .tns-controls button:hover { background: var(--primary); }
+        .tns-controls button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* CTA */
+        .cta {
+            background: var(--dark-medium);
+            text-align: center;
+        }
+
+        /* --- 7. RODAPÉ --- */
+        .footer {
+            padding: 4rem 0 2rem 0;
+            text-align: center;
+        }
+        .footer__logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 900;
+        }
+        .footer__logo img { width: 50px; }
+        .footer__socials {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        .footer__socials a {
+            color: var(--grey);
+            font-size: 1.5rem;
+            transition: color 0.3s, transform 0.3s;
+        }
+        .footer__socials a:hover {
+            color: var(--primary);
+            transform: translateY(-4px);
+        }
+        .footer__copyright {
+            color: var(--grey);
+            font-size: 0.9rem;
+        }
+
+        /* --- 8. RESPONSIVIDADE --- */
+        @media (max-width: 768px) {
+            .mobile-menu-btn { display: block; }
+            .header__links {
+                position: fixed; top: 0; right: 0;
+                width: 100%; height: 100vh;
+                background: var(--dark);
+                flex-direction: column; justify-content: center;
+                font-size: 1.5rem;
+                transform: translateX(100%);
+                transition: transform 0.4s var(--ease-out);
+            }
+            .header__links.active {
+                transform: translateX(0);
+            }
+            .about__content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .tns-controls {
+                display: none; /* Esconde setas no mobile para um visual mais limpo */
+            }
+        }
     </style>
 </head>
-<body>
-    <header>
-        <div class="nav-container">
-            <div class="logo">
-                <div class="logo-symbol"><img src="/utilites/assets/icon.png" alt=""></div>
-                <span class="logo-text">CYBERION</span>
-            </div>
-            <nav>
-                <button class="mobile-menu-btn">☰</button>
-                <ul>
-                    <li><a href="#sobre">Sobre</a></li>
-                    <li><a href="#servicos">Serviços</a></li>
-                    <li><a href="#depoimentos">Depoimentos</a></li> 
 
-                    <li ><a href="#contato"> <button id="contato"> Contato</button></a></li>
+<body>
+    <div class="background-glow"></div>
+
+    <header class="header" id="header">
+        <div class="container header__nav">
+            <a href="#" class="header__logo">
+                <img src="utilites/assets/CYBERION__1_-removebg-preview.png" alt="Cyberion Logo">
+                <span>CYBERION</span>
+            </a>
+            <nav>
+                <ul class="header__links" id="nav-links">
+                    <li><a href="#services">Serviços</a></li>
+                    <li><a href="#about">Sobre</a></li>
+                    <li><a href="#testimonials">Depoimentos</a></li>
+                    <li><a href="#contact" class="btn btn--primary">Contato</a></li>
                 </ul>
+                <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
             </nav>
         </div>
     </header>
 
-    <section class="hero">
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/6CNTjxyhfnk?si=vvrYm-x4nyoq2GBd" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        <div class="hero-overlay"></div>
-    </section>
+    <main>
 
-    <section id="sobre" class="about">
-        <div class="about-container">
-            <div class="about-text">
-                <h2>Quem Somos</h2>
-                <p>A Cyberion é uma empresa líder em soluções digitais, especializada em desenvolvimento web, implementação de RPA, plataformas SaaS e soluções de software personalizadas. Nossa missão é transformar negócios através da inovação tecnológica, combinando expertise técnica com uma visão estratégica para entregar resultados excepcionais.</p>
+        <section class="hero">
+            <div class="container hero__content reveal">
+                <h1 class="hero__title">
+                    Construindo o <span>Futuro Digital</span> da Sua Empresa
+                </h1>
+                <p class="hero__subtitle">
+                    Soluções inovadoras em Desenvolvimento Web, Automação (RPA) e SaaS para levar seu negócio ao próximo nível.
+                </p>
+                <a href="#services" class="btn btn--primary">Conheça Nossas Soluções</a>
             </div>
-            <div class="about-video">
-                <video controls>
-                    <source src="/api/placeholder/800/600" type="video/mp4">
-                </video>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="servicos" class="services">
-        <div class="services-container">
-            <div class="services-video">
-                <video controls>
-                    <source src="/api/placeholder/800/600" type="video/mp4">
-                </video>
-            </div>
-            <div class="services-text">
-                <h2>Nossos Serviços</h2>
-                <p>Oferecemos soluções digitais completas para impulsionar seu negócio. Nossa equipe especializada desenvolve websites responsivos, automatiza processos com RPA, cria plataformas SaaS escaláveis e desenvolve softwares personalizados para atender às suas necessidades específicas.</p>
-                <div class="services-buttons">
-                    <button class="btn btn-primary">Saiba Mais</button>
-                    <button class="btn btn-secondary" ><a href="pages/Subscribe.html">Contrate Agora</a></button>
+        <section id="services" class="section services">
+            <div class="container">
+                <div class="reveal">
+                    <h2 class="section__title">Nossa Expertise Digital</h2>
+                    <p class="section__subtitle">
+                        Oferecemos um arsenal completo de serviços tecnológicos projetados para performance, escalabilidade e inovação.
+                    </p>
+                </div>
+                <div class="services__grid">
+                    <div class="service-card reveal">
+                        <svg class="service-card__icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                        <h3 class="service-card__title">Desenvolvimento Web</h3>
+                        <p class="service-card__description">Criamos websites e aplicações responsivas, rápidas e visualmente impactantes que convertem visitantes em clientes.</p>
+                    </div>
+                    <div class="service-card reveal">
+                        <svg class="service-card__icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <h3 class="service-card__title">Soluções RPA</h3>
+                        <p class="service-card__description">Automatizamos seus processos manuais e repetitivos, liberando sua equipe para focar em tarefas estratégicas e de alto valor.</p>
+                    </div>
+                    <div class="service-card reveal">
+                        <svg class="service-card__icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2h1a2 2 0 002-2v-1a2 2 0 012-2h1.945M7.737 11l-.544 4.352A2 2 0 009.153 17h5.694a2 2 0 001.96-1.648l-.544-4.352M3 13a9 9 0 1118 0h-18z" /></svg>
+                        <h3 class="service-card__title">Plataformas SaaS</h3>
+                        <p class="service-card__description">Desenvolvemos e escalamos produtos de software como serviço (SaaS), desde a concepção e prototipagem até o lançamento.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="depoimentos" class="testimonials">
-        <div class="testimonials-slider">
-            <div class="testimonial-card">
-                <div class="testimonial-image">
-                    <img src="/utilites/assets/pessoa1.jpg" alt="Cliente 1">
+        <section id="about" class="section about">
+            <div class="container about__content">
+                <div class="about__text reveal">
+                    <h2 class="section__title" style="text-align: left;">Somos seus parceiros em <span>inovação.</span></h2>
+                    <p>Na Cyberion, não somos apenas desenvolvedores; somos arquitetos de soluções. Nossa paixão é mergulhar nos desafios dos nossos clientes e emergir com tecnologia que não apenas resolve problemas, mas cria novas oportunidades.</p>
+                    <p>Nossa equipe combina expertise técnica com uma visão de negócio afiada para garantir que cada projeto seja um sucesso mensurável.</p>
                 </div>
-                <h3 class="testimonial-name">João Silva</h3>
-                <p class="testimonial-company">TechBrasil Ltda</p>
-                <p class="testimonial-text">"A Cyberion revolucionou nossos processos com soluções RPA inovadoras. Nossa produtividade aumentou significativamente."</p>
-            </div>
-            <div class="testimonial-card">
-                <div class="testimonial-image">
-                    <img src="/utilites/assets/pessoa2.jpg" alt="Cliente 2">
+                <div class="about__video reveal">
+                 <iframe width="560" height="315" src="https://www.youtube.com/embed/6CNTjxyhfnk?si=AlWvgSjcI74sCGHz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
-                <h3 class="testimonial-name">Maria Santos</h3>
-                <p class="testimonial-company">Inova Digital</p>
-                <p class="testimonial-text">"O sistema desenvolvido pela Cyberion superou todas as nossas expectativas. Excelente equipe e suporte."</p>
             </div>
-            <div class="testimonial-card">
-                <div class="testimonial-image">
-                    <img src="/utilites/assets/pessoa3.jpeg" alt="Cliente 3">
-                </div>
-                <h3 class="testimonial-name">Pedro Oliveira</h3>
-                <p class="testimonial-company">Future Solutions</p>
-                <p class="testimonial-text">"Profissionalismo e qualidade excepcionais. A plataforma SaaS que desenvolveram transformou nosso negócio."</p>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <footer>
-        <div class="footer-grid">
-            <div class="footer-column">
-                <div class="logo">
-                    <div class="logo-symbol"></div>
-                    <span class="logo-text">CYBERION</span>
+        <section id="testimonials" class="section testimonials">
+            <div class="container">
+                <div class="reveal">
+                    <h2 class="section__title">A Confiança dos Nossos Clientes</h2>
+                    <p class="section__subtitle">Resultados reais contados por quem mais importa.</p>
                 </div>
-                <p>Transformando negócios através da inovação digital</p>
+                <div class="testimonials-slider reveal">
+                    <div class="testimonial-card">
+                        <img src="https://i.imgur.com/kSj9SgW.jpg" alt="Cliente 1" class="testimonial-card__image">
+                        <p class="testimonial-card__text">"A Cyberion revolucionou nossos processos com soluções RPA inovadoras. Nossa produtividade aumentou significativamente."</p>
+                        <h4 class="testimonial-card__name">João Silva</h4>
+                        <p class="testimonial-card__company">TechBrasil Ltda</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="https://i.imgur.com/pZz8b3K.jpg" alt="Cliente 2" class="testimonial-card__image">
+                        <p class="testimonial-card__text">"O sistema desenvolvido pela Cyberion superou todas as nossas expectativas. Excelente equipe e suporte."</p>
+                        <h4 class="testimonial-card__name">Maria Santos</h4>
+                        <p class="testimonial-card__company">Inova Digital</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <img src="https://i.imgur.com/8OMV3aY.jpg" alt="Cliente 3" class="testimonial-card__image">
+                        <p class="testimonial-card__text">"Profissionalismo e qualidade excepcionais. A plataforma SaaS que desenvolveram transformou nosso negócio."</p>
+                        <h4 class="testimonial-card__name">Pedro Oliveira</h4>
+                        <p class="testimonial-card__company">Future Solutions</p>
+                    </div>
+                </div>
             </div>
-            <div class="footer-column">
-                <h3>Serviços</h3>
-                <ul>
-                    <li>Desenvolvimento Web</li>
-                    <li>Soluções RPA</li>
-                    <li>Desenvolvimento SaaS</li>
-                    <li>Software Personalizado</li>
-                </ul>
+        </section>
+
+        <section id="contact" class="section cta">
+            <div class="container reveal">
+                <h2 class="section__title">Vamos construir o futuro do seu negócio?</h2>
+                <p class="section__subtitle">
+                    Uma ideia, um desafio ou um projeto? Adoraríamos ouvir sobre isso. Entre em contato e vamos começar a transformar sua visão em realidade.
+                </p>
+                <a href="mailto:cyberiontechsolutions@gmail.com" class="btn btn--primary">Enviar uma Mensagem</a>
             </div>
-            <div class="footer-column">
-                <h3>Empresa</h3>
-                <ul>
-                    <li>Home</li>
-                    <li>Sobre Nós</li>
-                    <li>Serviços</li>
-                    <li>Contato</li>
-                </ul>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container reveal">
+            <div class="footer__logo">
+                <img src="utilites/assets/CYBERION__1_-removebg-preview.png" alt="Cyberion Logo">
+                <span>CYBERION</span>
             </div>
-            <div class="footer-column">
-                <h3>Contato</h3>
-                <ul>
-                    <li>cyberiontechsolutions@gmail.com</li>
-                    <li>(31) 9 75085922</li>
-                    <li>Rua das Gaivotas, Dona Dina</li>
-                    <li>Matipó - MG</li>
-                </ul>
-            </div>
+            <ul class="footer__socials">
+                <li><a href="#" aria-label="LinkedIn"></a></li>
+                <li><a href="#" aria-label="GitHub"></a></li>
+                <li><a href="#" aria-label="Instagram"></a></li>
+            </ul>
+            <p class="footer__copyright">
+                © 2025 Cyberion. Todos os direitos reservados.
+            </p>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Cyberion. Todos os direitos reservados.</p>
-        </div>
-    </footer> 
-    <a id="robbu-whatsapp-button" target="_blank" href="https://api.whatsapp.com/send?phone=3175085922&text=Ol%C3%A1,%20%20gostaria%20de%20saber%20mais%20sobre%20a%20Cyberion"> <div class="rwb-tooltip">Fale conosco</div> <img src="https://cdn.positus.global/production/resources/robbu/whatsapp-button/whatsapp-icon.svg"> </a>
-  <script src="utilites/js/main.js"></script>
-<body/> 
-<html/>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/min/tiny-slider.js"></script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // --- 1. LÓGICA DO MENU MOBILE ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const navLinks = document.getElementById('nav-links');
+
+        if (mobileMenuBtn && navLinks) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                document.body.classList.toggle('menu-open');
+                mobileMenuBtn.innerHTML = navLinks.classList.contains('active') ? '✕' : '☰';
+            });
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navLinks.classList.contains('active')) {
+                        navLinks.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                        mobileMenuBtn.innerHTML = '☰';
+                    }
+                });
+            });
+        }
+        
+        // --- 2. CABEÇALHO COM SCROLL ---
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // --- 3. ANIMAÇÃO DE SCROLL ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        
+        // Ícones SVG para as redes sociais
+        const socialIcons = {
+            linkedin: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>',
+            github: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>',
+            instagram: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.012 3.584-.07 4.85c-.148 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.069-4.85.069s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.012-3.584.07-4.85c.148-3.225 1.664-4.771 4.919-4.919 1.266-.057 1.644-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.059 1.689.073 4.948.073s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/></svg>'
+        };
+        const socialLinks = document.querySelectorAll('.footer__socials a');
+        if (socialLinks.length) {
+            socialLinks[0].innerHTML = socialIcons.linkedin;
+            socialLinks[1].innerHTML = socialIcons.github;
+            socialLinks[2].innerHTML = socialIcons.instagram;
+        }
+
+        // --- 4. CARROSSEL DE DEPOIMENTOS ---
+        const sliderContainer = document.querySelector('.testimonials-slider');
+        if (sliderContainer) {
+            var slider = tns({
+                container: sliderContainer,
+                items: 1,
+                mouseDrag: true,
+                autoplay: true,
+                autoplayButtonOutput: false,
+                autoplayTimeout: 5000,
+                controls: true,
+                nav: true,
+                responsive: {
+                    768: { items: 1 }
+                }
+            });
+        }
+    });
+    </script>
+</body>
+</html>
