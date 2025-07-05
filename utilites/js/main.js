@@ -66,7 +66,7 @@
                 autoplay: true,
                 autoplayButtonOutput: false,
                 autoplayTimeout: 5000,
-                controls: true,
+                controls: false,
                 nav: true
             });
         }
