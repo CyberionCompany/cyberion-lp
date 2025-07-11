@@ -334,7 +334,20 @@
         }
         .tns-controls button:hover { background: var(--primary); }
         .tns-controls button:disabled { opacity: 0.3; cursor: not-allowed; }
+        /* --- 11. SEÇÃO CTA PLANOS --- */
+.cta-plans {
+    text-align: center;
+    background-color: rgba(var(--primary-rgb), 0.05); /* Um leve destaque no fundo */
+}
 
+.cta-plans .section__subtitle {
+    margin-bottom: 2.5rem; /* Aumenta o espaço antes do botão */
+}
+
+.cta-plans .btn {
+    font-size: 1.1rem;
+    padding: 1.1rem 3rem;
+}
         /* Contato (Formulário) */
         .contact-form {
             max-width: 700px;
