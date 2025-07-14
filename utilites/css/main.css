@@ -506,3 +506,101 @@
     width: 32px;
     height: 32px;
 }
+
+/* --- 9. SEÇÃO PORTFOLIO (CASES REAIS) --- */
+.portfolio__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+.portfolio-card {
+    background: var(--dark-medium);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(var(--light), 0.1);
+    transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+    display: flex;
+    flex-direction: column;
+}
+
+.portfolio-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(var(--secondary-rgb), 0.2);
+}
+
+.portfolio-card__image-container {
+    height: 200px;
+    overflow: hidden;
+}
+
+.portfolio-card__image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s var(--ease-out);
+}
+
+.portfolio-card:hover .portfolio-card__image-container img {
+    transform: scale(1.05);
+}
+
+.portfolio-card__content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Faz o conteúdo ocupar o espaço restante */
+}
+
+.portfolio-card__title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--light);
+    margin-bottom: 0.75rem;
+}
+
+.portfolio-card__description {
+    color: var(--grey);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    flex-grow: 1; /* Empurra o link para o final */
+}
+
+.btn-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.3s, transform 0.3s;
+    align-self: flex-start; /* Alinha o botão à esquerda */
+}
+
+.btn-link .arrow {
+    transition: transform 0.3s var(--ease-out);
+}
+
+.btn-link:hover {
+    color: var(--light);
+}
+
+.btn-link:hover .arrow {
+    transform: translateX(5px);
+}
+
+
+/* --- AJUSTE NO HEADER PARA O NOVO LINK --- */
+/* Aumenta o gap para acomodar o novo item no desktop */
+@media (min-width: 769px) {
+    .header__links {
+        gap: 2.2rem;
+    }
+}
+
+/* --- AJUSTE DE RESPONSIVIDADE PARA O PORTFOLIO --- */
+@media (max-width: 768px) {
+    .portfolio__grid {
+         grid-template-columns: 1fr;
+    }
+}
